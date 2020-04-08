@@ -50,7 +50,8 @@ table (MsPacMan$K.NbTouchesFreq)
 ggplot (data = MsPacMan, aes (x = K.NbTouchesFreq)) +
   geom_bar()
 
-outlier <- filter (MsPacMan, K.NbTouchesFreq > 10) # oui, c'est du Dota ou LOL !
+outlier <- filter (MsPacMan, K.NbTouchesFreq > 10) # oui, c'est du LOL ! 
+# L'erreur a été corrigée directement dans les données et n'apparaîtra plus ici
 MsPacMan <- filter (MsPacMan, K.NbTouchesFreq < 10)
 
 ggplot (data = MsPacMan, aes (x = K.NbTouchesFreq)) +
