@@ -2,6 +2,7 @@ rm(list=ls()) # on vide la mémoire de RStudio
 setwd("~/Documents/Projets R/Rythmanalyse") #choix du dossier où se trouve le script Rythma.4.9.R
 
 # Installation (si besoin) et chargement des packages requis
+# Pour installer les packages : install.packages ("tidyverse") ...
 library(tidyverse)
 library (RColorBrewer)
 library (FactoMineR)
