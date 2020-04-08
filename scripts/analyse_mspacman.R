@@ -1,5 +1,5 @@
 rm(list=ls()) # on vide la mémoire de RStudio
-setwd("~/Documents/Projets R/Rythmanalyse") #choix du dossier où se trouve le script Rythma.4.9.R
+setwd("~/Documents/Projets R/Rythmanalyse") #choix du dossier où se trouve votre fichier de données 2020.04.08.ALL.GENRE.csv
 
 # Installation (si besoin) et chargement des packages requis
 # Pour installer les packages : install.packages ("tidyverse") ...
@@ -22,7 +22,7 @@ library (ggrepel)
 ## 0. Préparer les données
 
 # on récupère l'ensemble des données
-d <- read_csv("2020.04.07.ALL.GENRE.csv")
+d <- read_csv("2020.04.08.ALL.GENRE.csv")
 names (d[,c(2:ncol(d))])
 
 # données clavier
