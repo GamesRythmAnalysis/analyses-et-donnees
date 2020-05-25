@@ -4,6 +4,11 @@
 ## analyse factorielle
 ## PH03 - P20
 
+## pour afficher l'aide sur une fonction
+## ? nomfonction
+## exemple ? setwd
+
+
 ###############################################
 # 1. Préparation et installation des packages #
 ###############################################
@@ -81,6 +86,8 @@ monjeu <- "LOL" # le nom exact du jeu étudié
 # à vous de tester celles qui vous semblent pertinentes
 # le bouton Export au-dessus de la fenêtre "Plots" de Rstudio vous permet de sauver l'image
 
+# la documentation de base de ggplot : https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+
 ggplot (data = d.mini, aes (x = K.NbAppuisS, y = K.TpMoyAppui, color = titre == monjeu)) +
   geom_point(aes (size = 2))
 
@@ -109,12 +116,12 @@ ggplot (data = d.genre, aes (x = K.NbAppuisS, y = K.TpMoyAppui, color = titre)) 
 # 4. Analyse factorielle #
 ##########################
 
-# l'analyse factorielle est une méthode d'analyse et de classification des données
+# l'analyse factorielle est une méthode d'analyse et de classification
 # nous utilisons le package factominer pour faire une analyse en composantes principales (ACP)
 # la documentation : http://factominer.free.fr/factomethods/analyse-en-composantes-principales.html
 
 
-# ici il va d'abord falloir choisir les variables pertinentes
+# Il va d'abord falloir choisir les variables à intégrer à l'analyse
 names (d.mini) # est votre ami
 # pour une analyse factorielle, on ne traite que des variables quantitatives
 # on ne peut pas retenir le nom de la touche la plus fréquente ("Z") par ex., sinon à titre d'illustration
@@ -137,10 +144,14 @@ d.pca <- d.mini %>%
 d.pca <- d.pca %>% 
   group_by(titre) %>%
   summarise_all(mean)
+d.pca <- column_to_rownames(d.pca, "titre") 
 
-d.pca <- column_to_rownames(d.pca, "titre")
 res.pca <- PCA(d.pca, scale.unit=TRUE, graph=F)
 
-graph.var (res.pca) # visualiser les relations entre les variables
+# on visualise les relations entre les variables
+# qui expliquera le positionnement des titres sur le graphe
+graph.var (res.pca) 
 
+# on génère le graphe qui va positionner les jeux
+# en fonction des covariances entre les indicateurs
 plot.PCA (res.pca, axes=c(1, 2), choix="ind", select ="dist 40", cex = 1.1)
