@@ -41,7 +41,7 @@ library (ggrepel)
 # 2. Récupération des données #
 ###############################
 
-d <- read.csv ("2020.06.04.ALL.GENRE.csv")
+d <- read.csv ("2020.06.08.ALL.GENRE.csv")
 
 # la commande names (d) affiche l'ensemble des variables
 names (d)
@@ -156,3 +156,62 @@ graph.var (res.pca)
 # en fonction des covariances entre les indicateurs
 plot.PCA (res.pca, axes=c(1, 2), choix="ind", select ="dist 40", cex = 1.1,
           habillage = 1)
+
+
+
+
+############################
+# 5. Questions spécifiques #
+############################
+
+journal <- read_csv("FIFAjournaldebord.csv")
+
+# harmoniser les données 
+journal$nomfichier <- paste (journal$nomfichier, ".zip", sep ="") # on ajoute .zip au nom fichier
+journal$nomfichier <- toupper (journal$nomfichier) # on passe tout en maj
+d.mini$nomfichier <- toupper (d.mini$nomfichier)
+
+# on garde les données communes aux 2 jeux de données
+d.journal <- d.mini %>%
+  filter (nomfichier %in% journal$nomfichier) %>%
+  arrange (nomfichier)
+journal <- journal %>%
+  filter (nomfichier %in% d.journal$nomfichier) %>%
+  arrange(nomfichier)
+
+# on fabrique un nouveau jeu avec les données du journal
+journal <- journal %>%
+  select (mode,equipe_joueur,equipe_adverse,score)
+d.journal <- bind_cols(d.journal,journal)
+d.journal$mode <- toupper(d.journal$mode)
+
+# analyse
+ggplot (data = d.journal, aes (x = P.VitG, y = P.NbAppuisS, color = P.ToucheFreq, 
+                               shape = titre, label = mode )) +
+  geom_point(aes (size = 2)) +
+  geom_label_repel()
+
+# Comparer les temps d’appuis sur la gachette droite entre FIFA14 et FIFA20 pour voir dans lequel on court le plus
+names (d.journal)
+ggplot (data = d.journal, aes (x = P.ToucheFreq, y = P.TpMoyAppui, fill = titre)) +
+  geom_bar(stat="identity") +
+  ggtitle("Durée moyenne d'appui sur A, RB, RT : FIFA 14 (rouge) vs FIFA 20 (bleu)")
+  
+# Etudier la fréquence des mouvements brusques avec le joystick droit pour étudier le style de jeu (bcp de drible ou non)
+ggplot (data = d.journal, aes (x = P.VitD, y = P.VitG, color = mode, 
+                               shape = titre)) +
+  geom_point(aes (size = 2)) +
+  ggtitle("Activité des sticks droit / gauche selon le mode de jeu ")
+
+# Comparer le nombre de passes entre les match en ligne et les match contre l’ordinateur pour voir la différence de style de jeu
+# Comparer le nombre d’appuis sur B et le nombre de but par match
+# quelle touche pour passes ? revenir aux données brutes
+
+# Etudier les phases défensive en regardant les non-appuies sur A (passe) et les appuis sur X (tacle)
+# il faut regarder les graphes individuels pour chaque session
+
+# Etudier l’utilisation du joystick gauche sur une mi-temps (en général une mi-temps dure entre 5 et 6 min) pour observer les déplacements vers le but adverses ou vers son but. 
+# Possibilité de mettre en corrélation avec les appuies sur A et X.
+# découper le fichier avec le bon timecode pour les mi-temps dans la fonction rythmanalyse 
+# sur le modèle : ## ex. Rythmanalyse ("2016.03.24.MT.Sylvio.s1.zip", debut = 5, fin =60, graph = FALSE)
+# analyser la sortie graphique
